@@ -1,13 +1,20 @@
-Welcome to Hyperledger Fabric
-=============================
+.. HyperLedger Fabric文档注解 documentation master file, created by
+   sphinx-quickstart on Fri Jun 22 14:02:09 2018.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-Hyperledger Fabric is a platform for distributed ledger solutions, underpinned
-by a modular architecture delivering high degrees of confidentiality, resiliency,
-flexibility and scalability.  It is designed to support pluggable implementations
-of different components, and accommodate the complexity and intricacies that exist
-across the economic ecosystem.
+HyperLedger Fabric文档注解
+======================================================
 
-Hyperledger Fabric delivers a uniquely elastic and extensible architecture,
-distinguishing it from alternative blockchain solutions. Planning for the
-future of enterprise blockchain requires building on top of a fully-vetted,
-open source architecture; Hyperledger Fabric is your starting point.
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
