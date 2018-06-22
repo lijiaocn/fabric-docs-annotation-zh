@@ -1,12 +1,16 @@
 *Needs Review*
 
-Glossary
+Glossary(术语解释)
 ===========================
 
 Terminology is important, so that all Hyperledger Fabric users and developers
 agree on what we mean by each specific term. What is chaincode, for example.
 The documentation will reference the glossary as needed, but feel free to
 read the entire thing in one sitting if you like; it's pretty enlightening!
+
+.. note::
+
+    这些术语非常重要！！！定义统一了，才能更好的交流。
 
 .. _Anchor-Peer:
 
@@ -18,6 +22,11 @@ Each Member_ on a channel has an anchor peer (or multiple anchor peers to preven
 single point of failure), allowing for peers belonging to different Members to
 discover all existing peers on a channel.
 
+.. note::
+
+    每个组织可以设置一个或多个“锚点”Peer。
+    锚点Peer是写入到Channel的配置中的，而每个Peer接入时都会获得Channel配置，
+    因此可以得知其它组织的Peer的地址。
 
 .. _Block:
 
@@ -26,6 +35,10 @@ Block
 
 An ordered set of transactions that is cryptographically linked to the
 preceding block(s) on a channel.
+
+.. note::
+
+    多个交易被打包成区块。
 
 .. _Chain:
 
@@ -38,6 +51,11 @@ the block's transactions as valid or invalid based on endorsement policies and
 concurrency violations, and append the block to the hash chain on the peer's
 file system.
 
+.. note::
+
+    区块链，包括所有的交易流水，每个Peer上都有一份。
+    Peer从Orderer那里接收到区块，验证有效后，连接到本地Chain中。
+
 .. _chaincode:
 
 Chaincode
@@ -45,6 +63,11 @@ Chaincode
 
 Chaincode is software, running on a ledger, to encode assets and the transaction
 instructions (business logic) for modifying the assets.
+
+.. note::
+
+    合约，在Fabric中合约就是一个程序，它以docker容器的形式运行在每个Peer上。
+    可以直接访问Peer上的合约。
 
 .. _Channel:
 
@@ -57,6 +80,10 @@ peers in the channel, and transacting parties must be properly authenticated to
 a channel in order to interact with it.  Channels are defined by a
 Configuration-Block_.
 
+.. note::
+
+    几个成员之间建立的私链。
+
 .. _Commitment:
 
 Commitment
@@ -66,6 +93,10 @@ Each Peer_ on a channel validates ordered blocks of
 transactions and then commits (writes/appends) the blocks to its replica of the
 channel Ledger_. Peers also mark each transaction in each block
 as valid or invalid.
+
+.. note::
+
+    写入账本。
 
 .. _Concurrency-Control-Version-Check:
 
@@ -80,6 +111,11 @@ commitment time, then a Concurrency Control Version Check violation has
 occurred, and the transaction is marked as invalid on the ledger and values
 are not updated in the state database.
 
+.. note::
+
+    Peer在将交易入账时，会检查交易的前提是否改变（数据是否发生变化），如果是,
+    则不入账。
+
 .. _Configuration-Block:
 
 Configuration Block
@@ -90,6 +126,11 @@ chain (ordering service) or channel. Any configuration modifications to a
 channel or overall network (e.g. a member leaving or joining) will result
 in a new configuration block being appended to the appropriate chain. This
 block will contain the contents of the genesis block, plus the delta.
+
+.. note::
+
+    配置块是非常重要的，也就是部署Fabric时使用的创世块。
+    记录了channel、系统chain等信息。
 
 .. Consensus
 
@@ -122,6 +163,10 @@ nodes, without compromising the operationality of the overall network. Dynamic
 membership is critical when business relationships adjust and entities need to
 be added/removed for various reasons.
 
+.. note::
+
+    Fabric中成员、peer、order node都是可以动态添加的。
+
 .. _Endorsement:
 
 Endorsement
@@ -133,6 +178,10 @@ chaincode execution response message, results (read set and write set), and even
 as well as a signature to serve as proof of the peer's chaincode execution.
 Chaincode applications have corresponding endorsement policies, in which the endorsing
 peers are specified.
+
+.. note::
+
+    Peer向client回应的chaincode执行结果。
 
 .. _Endorsement-policy:
 
@@ -148,6 +197,10 @@ curated based on the application and the desired level of resilience against
 misbehavior (deliberate or not) by the endorsing peers. A transaction that is submitted
 must satisfy the endorsement policy before being marked as valid by committing peers.
 A distinct endorsement policy for install and instantiate transactions is also required.
+
+.. note::
+
+    交易成立需要满足的条件（得到哪些Peer的认同）。
 
 .. _Fabric-ca:
 
@@ -223,6 +276,10 @@ it subscribes to. One of these peers is serves as the leading peer for the chann
 in order to communicate with the network ordering service on behalf of the
 member. The ordering service "delivers" blocks to the leading peer(s) on a
 channel, who then distribute them to other peers within the same member cluster.
+
+.. note::
+
+    Orderer只将新的区块，分发给Leading Peer，Leading Peer再分发给其它Peer。
 
 .. _Ledger:
 
@@ -352,6 +409,10 @@ The system chain can be thought of as the common binding for a channel or group
 of channels.  For instance, a collection of financial institutions may form a
 consortium (represented through the system chain), and then proceed to create
 channels relative to their aligned and varying business agendas.
+
+.. note::
+
+    系统链，配置区块形成的链，全局信息
 
 .. _Transaction:
 
