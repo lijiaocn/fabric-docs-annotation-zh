@@ -1,6 +1,16 @@
 Welcome to Hyperledger Fabric
 =============================
 
+这里是HyperLedger Fabric 1.1版本文档的批注版本。
+
+主要目的是督促自己浏览一下Fabric的文档，防止遗漏重要信息，同时也方便一同学习Fabric的朋友。
+
+没有翻译成中文，一是因为通篇翻译耗时费力，二是英文原版的表达更精确，还是应当坚持使用英文文档。
+
+更多关于HyplerLedger的文章：http://www.lijiaocn.com/tags/blockchain.html
+
+HyperLedger Fabric官方文档：https://hyperledger-fabric.readthedocs.io/en/release-1.1/build_network.html
+
 Hyperledger Fabric is a platform for distributed ledger solutions, underpinned
 by a modular architecture delivering high degrees of confidentiality, resiliency,
 flexibility and scalability.  It is designed to support pluggable implementations
