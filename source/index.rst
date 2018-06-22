@@ -12,8 +12,8 @@ Welcome to Hyperledger Fabric(中文批注)
     更多关于HyplerLedger的文章：http://www.lijiaocn.com/tags/blockchain.html
 
     HyperLedger Fabric原始文档：https://hyperledger-fabric.readthedocs.io
-
-    对Fabric完全不了解的可以先阅读：:doc:`getting_started`
+    
+    有批注的页面的标题后面都带有中文，在左侧目录中可以看到。
 
 Hyperledger Fabric is a platform for distributed ledger solutions, underpinned
 by a modular architecture delivering high degrees of confidentiality, resiliency,
