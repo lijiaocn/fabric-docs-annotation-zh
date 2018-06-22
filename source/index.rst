@@ -1,7 +1,7 @@
 Welcome to Hyperledger Fabric
 =============================
 
-.. 批注
+.. note:: 批注
 
     这里是HyperLedger Fabric 1.1版本文档的批注版本。
 
