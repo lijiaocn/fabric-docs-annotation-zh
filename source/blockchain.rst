@@ -31,6 +31,9 @@ across many network participants, each of whom **collaborate** in its maintenanc
 We’ll see that decentralization and collaboration are powerful attributes that
 mirror the way businesses exchange goods and services in the real world.
 
+.. note:: 区块链账本是去中心化的，每个参与方互相协作的同时都有自己的一份账本，自己维护。
+          这和真实世界中的商业行为非常相似。
+
 .. image:: images/basic_network.png
 
 In addition to being decentralized and collaborative, the information recorded
@@ -41,11 +44,16 @@ simple to determine the provenance of information because participants can be
 sure information has not been changed after the fact. It’s why blockchains
 are sometimes described as **systems of proof**.
 
+.. note:: 区块链通过只能追加的设计，并利用加密技术，保证数据写入后无法篡改，
+          从而能很简单地验证 **信息来源**。
+
  **Smart Contracts**
 
 To support the consistent update of information – and to enable a whole host of
 ledger functions (transacting, querying, etc) – a blockchain network uses **smart
 contracts** to provide controlled access to the ledger.
+
+.. note:: 通过 **智能合约** 操作账本
 
 .. image:: images/Smart_Contract.png
 
@@ -58,6 +66,10 @@ an item that changes depending on when it arrives. With the terms agreed to
 by both parties and written to the ledger, the appropriate funds change hands
 automatically when the item is received.
 
+.. note:: 智能合约不仅为操作账本数据提供便利，还可以被设计为自动执行，取代人工
+          对账等过程。但是智能合约的设计，要相当谨慎。最近公链上合约，爆出了不少
+          设计缺陷与漏洞。或许未来会有一个新的职业：合约工程师。
+
 **Consensus**
 
 The process of keeping the ledger transactions synchronized across the network –
@@ -65,12 +77,17 @@ to ensure that ledgers only update when transactions are approved by the appropr
 participants, and that when ledgers do update, they update with the
 same transactions in the same order – is called **consensus**.
 
+.. note:: 这里的共识特指只有得到足够支持的“交易”才能入账，所有的交易都要按照同样顺序
+          被记录到每个独立的账本中。在Fabric中，“交易”就是写入操作。
+
 .. image:: images/consensus.png
 
 We’ll learn a lot more about ledgers, smart contracts and consensus later. For
 now, it’s enough to think of a blockchain as a shared, replicated transaction
 system which is updated via smart contracts and kept consistently
 synchronized through a collaborative process called consensus.
+
+.. note:: 一个多备份、通过智能合约操作的系统，备份严格一致。
 
 Why is a Blockchain useful?
 ---------------------------
@@ -150,6 +167,14 @@ that allows unknown identities to participate in the network (requiring protocol
 like Proof of Work to validate transactions and secure the network), the members
 of a Hyperledger Fabric network enroll through a **Membership Service Provider (MSP)**.
 
+.. note:: 
+
+      HyperLedger Fabric是私有的、有准入限制的。接入Fabric，是需要得到验证身份、
+      得到批准的。这一点不同于比特币等公链，在公链中，任何人都可以加入、发起交易。
+      我认为，短期内，有准入的限制的私有链比公链更有价值。早期的公有链绝对能被
+      “攻击”成筛子，并且没有清晰的盈利模式。发现“限量”的货币，是在利用人性的弱点
+      --对稀缺性的追捧，是不可持续的。
+
 Hyperledger Fabric also offers several pluggable options. Ledger data can be
 stored in multiple formats, consensus mechanisms can be switched in and out,
 and different MSPs are supported.
@@ -162,6 +187,10 @@ and not others, for example - known to every participant. If two
 participants form a channel, then those participants – and no others – have copies
 of the ledger for that channel.
 
+.. note:: 
+
+     channel是Fabric的重要卖点，允许一组参与者创建一个独立的账本。
+
 **Shared Ledger**
 
 Hyperledger Fabric has a ledger subsystem comprising two components: the **world
@@ -173,6 +202,10 @@ in time. It’s the database of the ledger. The transaction log component record
 all transactions which have resulted in the current value of the world state.
 It’s the update history for the world state. The ledger, then, is a combination
 of the world state database and the transaction log history.
+
+.. note::
+
+    worldstate是账本的当前状态，transaction log是形成当前状态的所有交易流水。
 
 The ledger has a replaceable data store for the world state. By default, this
 is a LevelDB key-value store database. The transaction log does not need to be
@@ -190,6 +223,10 @@ it, for example), and not the transaction log.
 Chaincode can be implemented in several programming languages. The currently
 supported chaincode language is `Go <https://golang.org/>`__ with support
 for Java and other languages coming in future releases.
+
+.. note::
+
+    外部应用通过chaincode(fabric的合约)操作账本
 
 **Privacy**
 
@@ -225,6 +262,14 @@ peer-to-peer.
 We’ll learn more about the Hyperledger Fabric consensus mechanisms, which
 currently include SOLO, Kafka, and will soon extend to SBFT (Simplified
 Byzantine Fault Tolerance), in another document.
+
+.. note::
+
+    “共识”是一个被研究了很久的领域。比较理想方式还是PBFT协议，通过PBFT协议
+    确保每个参与者都维护了同样的数据，即使存在恶意参与者。
+    
+    比特币采用“挖矿”方式太低效、耗费资源了，不可取。
+
 
 Where can I learn more?
 -----------------------
