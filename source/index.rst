@@ -1,7 +1,7 @@
-Welcome to Hyperledger Fabric
-=============================
+Welcome to Hyperledger Fabric(中文批注)
+=======================================
 
-.. note:: 批注
+.. note::
 
     这里是HyperLedger Fabric 1.1版本文档的批注版本。
 
@@ -11,7 +11,7 @@ Welcome to Hyperledger Fabric
 
     更多关于HyplerLedger的文章：http://www.lijiaocn.com/tags/blockchain.html
 
-    HyperLedger Fabric官方文档：https://hyperledger-fabric.readthedocs.io
+    HyperLedger Fabric原始文档：https://hyperledger-fabric.readthedocs.io
 
 Hyperledger Fabric is a platform for distributed ledger solutions, underpinned
 by a modular architecture delivering high degrees of confidentiality, resiliency,
