@@ -413,6 +413,7 @@ channels relative to their aligned and varying business agendas.
 .. note::
 
     系统链，配置区块形成的链，全局信息
+    暂时没弄清楚这条链是怎么回事，在Orderer的data目录中只看到有以channel名命名的子目录
 
 .. _Transaction:
 

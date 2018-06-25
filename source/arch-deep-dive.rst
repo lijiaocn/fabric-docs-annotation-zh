@@ -1,5 +1,5 @@
-Architecture Explained
-======================
+Architecture Explained (架构介绍)
+================================
 
 The Hyperledger Fabric architecture delivers the following advantages:
 
@@ -10,6 +10,12 @@ The Hyperledger Fabric architecture delivers the following advantages:
    fail or misbehave, and the endorsers may be different for each
    chaincode.
 
+.. note::
+
+    背书是背书、共识是共识，Fabric做了明确的区分
+    背书，是指示其它Peer上的合约接受同样的操作，至于需要哪些组织的Peer背书
+    是在部署Chaincode的指定的（背书策略）。
+
 -  **Scalability.** As the endorser nodes responsible for particular
    chaincode are orthogonal to the orderers, the system may *scale*
    better than if these functions were done by the same nodes. In
@@ -19,12 +25,22 @@ The Hyperledger Fabric architecture delivers the following advantages:
    Besides, chaincode execution, which can potentially be costly, is
    removed from the critical path of the ordering service.
 
+.. note::
+
+    每个Chaincode的背书策略是单独指定的，可以使用不同的Peer，因此
+    整体来看，背书过程是有一定程度的并行的。
+    合约的执行也在Peer上完成，使Orderer专注于交易排序。
+
 -  **Confidentiality.** The architecture facilitates deployment of
    chaincodes that have *confidentiality* requirements with respect to
    the content and state updates of its transactions.
 
 -  **Consensus modularity.** The architecture is *modular* and allows
    pluggable consensus (i.e., ordering service) implementations.
+
+.. note:: 
+
+    共识机制是模块化设计，可插拔的。
 
 **Part I: Elements of the architecture relevant to Hyperledger Fabric
 v1**
@@ -49,8 +65,16 @@ transactions may be committed and have an effect on the state. There may
 exist one or more special chaincodes for management functions and
 parameters, collectively called *system chaincodes*.
 
+.. note::
+
+    注意system chaincodes，说法是“may exist”，目前还不清楚具体是怎么回事。
+
 1.1. Transactions
 ~~~~~~~~~~~~~~~~~
+
+.. note::
+
+    一直很纠结，Transactions该翻译为“交易”还“事务”？
 
 Transactions may be of two types:
 
@@ -67,6 +91,10 @@ Transactions may be of two types:
 As described later, deploy transactions are special cases of invoke
 transactions, where a deploy transaction that creates new chaincode,
 corresponds to an invoke transaction on a system chaincode.
+
+.. note::
+
+    部署Chaincode，相当于调用“system chaincode”
 
 **Remark:** *This document currently assumes that a transaction either
 creates new chaincode or invokes an operation provided by *one* already
@@ -131,11 +159,19 @@ talk about *valid* transactions) and unsuccessful attempts to change
 state (we talk about *invalid* transactions), occurring during the
 operation of the system.
 
+.. note::
+
+    账本中也会记录无效的交易，无效的交易会标记为无效。
+
 Ledger is constructed by the ordering service (see Sec 1.3.3) as a
 totally ordered hashchain of *blocks* of (valid or invalid)
 transactions. The hashchain imposes the total order of blocks in a
 ledger and each block contains an array of totally ordered transactions.
 This imposes total order across all transactions.
+
+.. note::
+
+    账本中的交易记录的顺序是ordering service决定的。   
 
 Ledger is kept at all peers and, optionally, at a subset of orderers. In
 the context of an orderer we refer to the Ledger as to
@@ -145,11 +181,21 @@ ledger as to ``PeerLedger``. ``PeerLedger`` differs from the
 apart valid transactions from invalid ones (see Section XX for more
 details).
 
+.. note::
+
+    账本保存在所有的Peer上，Orderer中可以保存账本。
+    Peer上的账本相比Orderer中的账本，多了一个交易是否有效的标记位。
+
 Peers may prune ``PeerLedger`` as described in Section XX (post-v1
 feature). Orderers maintain ``OrdererLedger`` for fault-tolerance and
 availability (of the ``PeerLedger``) and may decide to prune it at
 anytime, provided that properties of the ordering service (see Sec.
 1.3.3) are maintained.
+
+.. note::
+
+    在post-v1中，peer可以只保存部分账本。
+    orderers会为了容灾和可用性保存账本，并且决定是否删减账本。
 
 The ledger allows peers to replay the history of all transactions and to
 reconstruct the state. Therefore, state as described in Sec 1.2.1 is an
@@ -197,6 +243,10 @@ ordering service.
 A peer receives ordered state updates in the form of *blocks* from the
 ordering service and maintain the state and the ledger.
 
+.. note::
+
+    peer从orderer收到的数据的格式是"blocks"。
+
 Peers can additionally take up a special role of an **endorsing peer**,
 or an **endorser**. The special function of an *endorsing peer* occurs
 with respect to a particular chaincode and consists in *endorsing* a
@@ -207,6 +257,10 @@ transaction endorsement (typically a set of endorsers' signatures), as
 described later in Sections 2 and 3. In the special case of deploy
 transactions that install new chaincode the (deployment) endorsement
 policy is specified as an endorsement policy of the system chaincode.
+
+.. note::
+
+    注意，背书就是获得对方的签名认可。   
 
 1.3.3. Ordering service nodes (Orderers)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -230,6 +284,10 @@ broadcast*, *atomic broadcast*, or *consensus* in the context of
 distributed systems. The communicated messages are the candidate
 transactions for inclusion in the blockchain state.
 
+.. note::
+
+    Orderer保证同一个Channel中的Peer收到同样的数据，包括内容和顺序。
+
 **Partitioning (ordering service channels).** Ordering service may
 support multiple *channels* similar to the *topics* of a
 publish/subscribe (pub/sub) messaging system. Clients can connect to a
@@ -240,6 +298,7 @@ may connect to multiple channels. Even though some ordering service
 implementations included with Hyperledger Fabric support multiple
 channels, for simplicity of presentation, in the rest of this
 document, we assume ordering service consists of a single channel/topic.
+
 
 **Ordering service API.** Peers connect to the channel provided by the
 ordering service, via the interface provided by the ordering service.
@@ -262,6 +321,11 @@ client/peer specified sequence numbers.
    sometimes called ``notify()`` in pub-sub systems or ``commit()`` in
    BFT systems.
 
+.. note::
+
+    Client将请求发送给Orderer之后，Orderer为请求赋予一个编号，连同最新的哈希码
+    发送给Peer。
+
 **Ledger and block formation.** The ledger (see also Sec. 1.2.2)
 contains all data output by the ordering service. In a nutshell, it is a
 sequence of ``deliver(seqno, prevhash, blob)`` events, which form a hash
@@ -273,6 +337,11 @@ the blobs and output *blocks* within a single ``deliver`` event. In this
 case, the ordering service must impose and convey a deterministic
 ordering of the blobs within each block. The number of blobs in a block
 may be chosen dynamically by an ordering service implementation.
+
+.. note::
+
+    为了提高传输效率，orderer可能一次性传送多个交易，一个区块中包含的交易数
+    可以由orderer动态决定。
 
 In the following, for ease of presentation, we define ordering service
 properties (rest of this subsection) and explain the workflow of
@@ -374,6 +443,11 @@ others may object and choose not to endorse the transaction. The
 submitting client tries to satisfy the policy expression with the
 endorsers available.
 
+.. note::
+
+    client可以通过一个peer获得目标channel的参与背书的peer。
+    如果有Peer离线，或者拒绝背书，client可以选择其它同样满足背书策略的peer。
+
 In the following, we first detail ``PROPOSE`` message format and then
 discuss possible patterns of interaction between submitting client and
 endorsers.
@@ -395,6 +469,7 @@ following.
    -  ``timestamp`` is a monotonically increasing (for every new
       transaction) integer maintained by the client,
    -  ``clientSig`` is signature of a client on other fields of ``tx``.
+
 
    The details of ``txPayload`` will differ between invoke transactions
    and deploy transactions (i.e., invoke transactions referring to a
@@ -458,6 +533,10 @@ version numbers (i.e., ``readset`` as defined below) of corresponding
 keys in its local KVS match those version numbers specified by
 ``anchor``.
 
+.. note::
+
+    背书节点首先验证client的签名，然后模拟执行，Client可以指定基于的版本
+
 Simulating a transaction involves endorsing peer tentatively *executing*
 a transaction (``txPayload``), by invoking the chaincode to which the
 transaction refers (``chaincodeID``) and the copy of the state that the
@@ -481,6 +560,12 @@ but the peer does not yet update its state. More specifically:
    new value ``v'``, pair ``(k,v')`` is added to ``writeset``.
    Alternatively, ``v'`` could be the delta of the new value to previous
    value (``s(k).value``).
+
+.. note::
+
+    readset、writeset的意思一定要理解，非常重要。
+    可以理解为readset是修改前的值，writeset是修改后的值
+    重点是，更新必须在readset中记录的值的基础上修改。
 
 If a client specifies ``anchor`` in the ``PROPOSE`` message then client
 specified ``anchor`` must equal ``readset`` produced by endorsing peer
@@ -515,6 +600,10 @@ Notice that an endorser does not change its state in this step, the
 updates produced by transaction simulation in the context of endorsement
 do not affect the state!
 
+.. note::
+
+    背书节点背书时，不会修改本地的数据，只将背书结果返回Client。
+
 2.3. The submitting client collects an endorsement for a transaction and broadcasts it through ordering service
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -523,6 +612,10 @@ signatures on ``(TRANSACTION-ENDORSED, tid, *, *)`` statements to
 conclude that the transaction proposal is endorsed. As discussed in
 Section 2.1.2., this may involve one or more round-trips of interaction
 with endorsers.
+
+.. note::
+
+    client收集所有的背书结果。
 
 The exact number of "enough" depend on the chaincode endorsement policy
 (see also Section 3). If the endorsement policy is satisfied, the
@@ -544,6 +637,10 @@ trusted by the client not to remove any message from the ``endorsement``
 or otherwise the transaction may be deemed invalid. Notice that,
 however, a proxy peer may not fabricate a valid ``endorsement``.
 
+.. note::
+
+    Client将得到有效背书的交易发送给Orderer
+
 2.4. The ordering service delivers a transactions to the peers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -560,6 +657,11 @@ applied all state updates for blobs with sequence number lower than
    meanwhile. In more complex use cases, ``tran-proposal`` fields in
    endorsement may differ and in this case endorsement policy (Section
    3) specifies how the state evolves.
+
+.. note::
+
+    Peer收到Orderer发送的区块后，依然要检查背书是否正确。
+    并验证交易的操作前提是否发生了变化(readset)
 
 Verification of dependencies can be implemented in different ways,
 according to a consistency property or "isolation guarantee" that is
@@ -581,6 +683,10 @@ requirement.
    the transaction is invalid and the peer marks the transaction with 0
    in the bitmask of the ``PeerLedger``. It is important to note that
    invalid transactions do not change the state.
+
+.. note::
+
+    无效的交易不入账。
 
 Note that this is sufficient to have all (correct) peers have the same
 state after processing a deliver event (block) with a given sequence
@@ -621,6 +727,11 @@ bounded policy evaluation time (termination), determinism, performance
 and security guarantees. Therefore, dynamic addition of endorsement
 policies is not allowed, but can be supported in future.
 
+.. note::
+
+    现在不允许动态修改背书策略。
+    可以通过升级Chaincode更新背书策略。
+
 3.2. Transaction evaluation against endorsement policy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -634,6 +745,11 @@ Formally the endorsement policy is a predicate on the endorsement, and
 potentially further state that evaluates to TRUE or FALSE. For deploy
 transactions the endorsement is obtained according to a system-wide
 policy (for example, from the system chaincode).
+
+.. note::
+
+    前面提到过，部署Chaincode也是一次交易，这个交易的背书策略是
+    “system-wide policy”
 
 An endorsement policy predicate refers to certain variables. Potentially
 it may refer to:
@@ -652,6 +768,10 @@ refer to keys and identities of nodes.
 deterministic.** An endorsement shall be evaluated locally by every peer
 such that a peer does *not* need to interact with other peers, yet all
 correct peers evaluate the endorsement policy in the same way.
+
+.. note::
+
+    每个Peer本地就可以校验背书策略
 
 3.3. Example endorsement policies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -730,6 +850,10 @@ is given in the figure below.
 
 *Figure 2. Illustration of validated ledger block (vBlock) formation from ledger (PeerLedger) blocks.*
 
+.. note::
+    
+    将有效的交易分离出来，单独存放。
+
 vBlocks are chained together to a hash chain by every peer. More
 specifically, every block of a validated ledger contains:
 
@@ -768,6 +892,10 @@ the network (as they do not need to establish validity of individual
 transactions when reconstructing the state by replaying ``PeerLedger``,
 but may simply replay the state updates contained in the validated
 ledger).
+
+.. note::
+
+    注意只是清除了无效的交易。
 
 4.2.1. Checkpointing protocol
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
