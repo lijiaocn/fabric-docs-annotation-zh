@@ -1,5 +1,5 @@
-Channels
-========
+Channels(频道)
+==============
 
 A Hyperledger Fabric **channel** is a private "subnet" of communication between
 two or more specific network members, for the purpose of conducting private and
@@ -17,6 +17,11 @@ information about the channel policies, members and anchor peers. When adding a
 new member to an existing channel, either this genesis block, or if applicable,
 a more recent reconfiguration block, is shared with the new member.
 
+.. note:: 
+
+    需要注意的是每个Channel都是一个独立账本，账本保存在加入Channel的Peer中。
+    每个Channel也都有自己的创世块，包含创世块的Channel配置是保存在Orderer中的。
+
 .. note:: See the :doc:`configtx` section for more more details on the properties
           and proto structures of config transactions.
 
@@ -26,6 +31,11 @@ leader is identified, an algorithm can be used to identify the leader. The conse
 service orders transactions and delivers them, in a block, to each leading peer,
 which then distributes the block to its member peers, and across the channel,
 using the **gossip** protocol.
+
+.. note::
+
+    Orderer将共识的结果发送给每个组织中的Leading Peer，Leading Peer再转发给组织
+    中的其它Peer。
 
 Although any one anchor peer can belong to multiple channels, and therefore
 maintain multiple ledgers, no ledger data can pass from one channel to another.
@@ -37,6 +47,11 @@ verifiable membership on the channel. This isolation of peers and ledger data,
 by channel, allows network members that require private and confidential
 transactions to coexist with business competitors and other restricted members,
 on the same blockchain network.
+
+.. note::
+
+    一个Peer可以接入到多个Channel中，Peer上会保存多个Channel的账本。
+    但ChannelA中的数据不会因此被传播到ChannelB中。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
