@@ -90,7 +90,7 @@ responses to determine if the proposal responses are the same. If the chaincode 
 the ledger, the application would inspect the query response and would typically not
 submit the transaction to Ordering Service. 
 
-.. note:: Client收到得到背书的交易，对背书结果进行比较，如果只是“查询”，不提交到Orderer。
+.. note:: Client收到多个Peer的背书，对背书结果进行比较，如果只有“查询”操作，不提交到Orderer。
 
 If the client application intends to submit the
 transaction to Ordering Service to update the ledger, the application determines if the specified
