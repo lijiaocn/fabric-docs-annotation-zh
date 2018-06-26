@@ -1,4 +1,4 @@
-Architecture Explained (架构介绍)
+Architecture Explained (系统架构整体介绍)
 ================================
 
 The Hyperledger Fabric architecture delivers the following advantages:
