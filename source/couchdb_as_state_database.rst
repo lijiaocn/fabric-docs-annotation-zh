@@ -1,5 +1,5 @@
-CouchDB as the State Database
-=============================
+CouchDB as the State Database (用CouchDB存放状态数据)
+=======================================================
 
 State Database options
 ----------------------
@@ -10,6 +10,8 @@ Like the LevelDB key/value store, CouchDB can store any binary data that is mode
 (CouchDB attachment functionality is used internally for non-JSON binary data). But as a JSON
 document store, CouchDB additionally enables rich query against the chaincode data, when chaincode
 values (e.g. assets) are modeled as JSON data.
+
+.. node:: CouchDB中直接存储json格式的文档，查询方式更灵活。
 
 Both LevelDB and CouchDB support core chaincode operations such as getting and setting a key
 (asset), and querying based on keys. Keys can be queried by range, and composite keys can be
@@ -22,7 +24,9 @@ If you model assets as JSON and use CouchDB, you can also perform complex rich q
 chaincode data values, using the CouchDB JSON query language within chaincode. These types of
 queries are excellent for understanding what is on the ledger. Proposal responses for these types
 of queries are typically useful to the client application, but are not typically submitted as
-transactions to the ordering service. In fact, there is no guarantee the result set is stable
+transactions to the ordering service.
+
+In fact, there is no guarantee the result set is stable
 between chaincode execution and commit time for rich queries, and therefore rich queries
 are not appropriate for use in update transactions, unless your application can guarantee the
 result set is stable between chaincode execution time and commit time, or can handle potential
@@ -31,11 +35,15 @@ owned by Alice and transfer them to Bob, a new asset may be assigned to Alice by
 transaction between chaincode execution time and commit time, and you would miss this "phantom"
 item.
 
+.. note:: 在Chaincode执行交易和提交提案之间，存在一个时间窗口，账本的数据可能在这期间被其他人修改了。
+
 CouchDB runs as a separate database process alongside the peer, therefore there are additional
 considerations in terms of setup, management, and operations. You may consider starting with the
 default embedded LevelDB, and move to CouchDB if you require the additional complex rich queries.
 It is a good practice to model chaincode asset data as JSON, so that you have the option to perform
 complex rich queries if needed in the future.
+
+.. node:: 将数据以json格式存入链中，以后可以应用“富文本查询”(rich query)。
 
 .. note:: A JSON document cannot use the following field names at the top level.
    These are reserved for internal use.
