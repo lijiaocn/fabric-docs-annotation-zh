@@ -1,5 +1,5 @@
-Read-Write set semantics
-~~~~~~~~~~~~~~~~~~~~~~~~
+Read-Write set semantics(读写集定义)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This documents discusses the details of the current implementation about
 the semantics of read-write sets.
@@ -16,15 +16,24 @@ their new values that the transaction writes. A delete marker is set (in
 the place of new value) for the key if the update performed by the
 transaction is to delete the key.
 
+.. note:: 读写集是背书节点在模拟交易的时候生成的。
+          Read Set是模拟交易时，读取出的Key的和版本，可以理解为是修改前提。
+          Write Set是交易将要写入的新值。
+
 Further, if the transaction writes a value multiple times for a key,
 only the last written value is retained. Also, if a transaction reads a
 value for a key, the value in the committed state is returned even if
 the transaction has updated the value for the key before issuing the
 read. In another words, Read-your-writes semantics are not supported.
 
+.. note:: Read Set中“已经提交”到账本的value。
+          不能在一个交易中，修改了某一个值后，然后又读取这个值。
+
 As noted earlier, the versions of the keys are recorded only in the read
 set; the write set just contains the list of unique keys and their
 latest values set by the transaction.
+
+.. note:: Read Set中记录的是key的版本，Write Set中记录的是最新的值
 
 There could be various schemes for implementing versions. The minimal
 requirement for a versioning scheme is to produce non-repeating
@@ -38,6 +47,8 @@ height of the transaction within the block). This scheme has many
 advantages over the incremental number scheme - primarily, it enables
 other components such as statedb, transaction simulation and validation
 for making efficient design choices.
+
+.. note:: 版本号是交易在区块链中的高度(height)。
 
 Following is an illustration of an example read-write set prepared by
 simulation of a hypothetical transaction. For the sake of simplicity, in
@@ -80,6 +91,8 @@ in the same block) are committed (*committed-state*). An additional
 validation is performed if the read-write set also contains one or more
 query-info.
 
+.. note:: 注意交易有效的判断方法：ReadSet中的记录与账本的记录相同。
+
 This additional validation should ensure that no key has been
 inserted/deleted/updated in the super range (i.e., union of the ranges)
 of the results captured in the query-info(s). In other words, if we
@@ -95,6 +108,8 @@ Other queries are at risk of phantoms, and should therefore only be used
 in read-only transactions that are not submitted to ordering, unless the
 application can guarantee the stability of the result set between
 simulation and validation/commit time.
+
+.. note:: Other queries are at risk of phantoms
 
 If a transaction passes the validity check, the committer uses the write
 set for updating the world state. In the update phase, for each key
@@ -139,6 +154,8 @@ T1,..,T5 (could be contained in a single block or different blocks)
 3. ``T3`` passes the validation because it does not perform a read.
    Further the tuple of the key, ``k2``, in the world state is updated
    to ``(k2,3,v2'')``
+
+.. note:: 注意T3是有效的，直接写，没有ReadSet。
 
 4. ``T4`` fails the validation because it reads a key, ``k2``, which was
    modified by a preceding transaction ``T1``
