@@ -50,7 +50,6 @@ Business:
    :maxdepth: 1
    :caption: Table of Contents
 
-   index
    getting_started
    key_concepts
    tutorials
