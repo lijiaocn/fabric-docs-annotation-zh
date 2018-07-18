@@ -1,4 +1,4 @@
-HyperLedger Fabric release 1.1
+Fabric 1.1
 ==============================
 
 
