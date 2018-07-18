@@ -13,4 +13,4 @@ HyperLedger Fabric原始文档：https://hyperledger-fabric.readthedocs.io
 
 有批注的页面的标题后面都带有中文，在左侧目录中可以看到。
 
-最新版本的文档，只对新增内容进行批注。
+最新版本的文档，只对新增内容进行批注。通过页面左下角，切换到对应版本的文档。
