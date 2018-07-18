@@ -1,4 +1,4 @@
-超级账本HyperLedger Fabric文档中文注释
+HyperLedger Fabric 中文注释
 ========================================
 
 这里是HyperLedger Fabric文档的批注版本。
@@ -14,3 +14,9 @@ HyperLedger Fabric原始文档：https://hyperledger-fabric.readthedocs.io
 有批注的页面的标题后面都带有中文，在左侧目录中可以看到。
 
 最新版本的文档，只对新增内容进行批注。通过页面左下角，切换到对应版本的文档。
+
+.. toctree::
+   :maxdepth: 1
+
+   release-1-1
+   release-1-2
