@@ -1,17 +1,11 @@
-Capability Requirements(特性约束)
----------------------------------
+Capability Requirements
+-----------------------
 
 Because Fabric is a distributed system that will usually involve multiple
 organizations (sometimes in different countries or even continents), it is
 possible (and typical) that many different versions of Fabric code will exist in
 the network. Nevertheless, it’s vital that networks process transactions in the
 same way so that everyone has the same view of the current network state.
-
-.. note:: Fabric是由很多组织参与形成的分布式网络，不同的组织可能使用不同版本的
-          软件，导致网络中会有多个版本的软件存在。
-          需要有一个协调的方法， 防止因版本不同引发混乱， “特性约束（capability
-          requirments）”就是被用来
-          做协调的。
 
 This means that every network -- and every channel within that network – must
 define a set of what we call “capabilities” to be able to participate in
@@ -28,19 +22,12 @@ corresponding capability is enabled.  In this way, capability requirements ensur
 even with disparate builds and versions, it is not possible for the network to suffer a
 state fork.
 
-.. note:: 具体做法就是定义一个“特性集(capabilities)”，只有支持所要求的特性的程序能够
-          加入Channel，并且版本较新的程序不能使用“特性集”之外的新特性，必须与其它Peer
-          保持一致。
-
 Defining Capability Requirements
 ================================
 
 Capability requirements are defined per channel in the channel configuration (found
 in the channel’s most recent configuration block). The channel configuration contains
 three locations, each of which defines a capability of a different type.
-
-.. note:: “特性约束”在Channel的配置中设置，分为Channel、Orderer、Application三类,
-          作用于不同的组件，也可以理解为三个级别，作用范围不同。
 
 +------------------+-----------------------------------+----------------------------------------------------+
 | Capability Type  | Canonical Path                    | JSON Path                                          |
@@ -67,8 +54,6 @@ capabilities is something only the application admins would manage. By splitting
 capabilities between "Orderer" and "Application", a hypothetical network could run a
 v1.6 ordering service while supporting a v1.3 peer application network.
 
-.. note:: Orderer和Application的特性约束是分开管理、独立设置的。
-
 However, some capabilities cross both the ‘Application’ and ‘Orderer’ groups. As we
 saw earlier, adding a new MSP role type is something both the orderer and application
 admins agree to and need to recognize. The orderer must understand the meaning
@@ -76,8 +61,6 @@ of MSP roles in order to allow the transactions to pass through ordering, while
 the peers must understand the roles in order to validate the transaction. These
 kinds of capabilities -- which span both the application and orderer components
 -- are defined in the top level "Channel" group.
-
-.. note:: Orderer和Application都包含的特性，在Channel中管理。
 
 .. note:: It is possible that the channel capabilities are defined to be at version
           v1.3 while the orderer and application capabilities are defined to be at
@@ -155,9 +138,6 @@ Note that there is a ``Capabilities`` section defined at the root level (for the
 capabilities), and at the Orderer level (for orderer capabilities). The sample above uses
 a YAML reference to include the capabilities as defined at the bottom of the YAML.
 
-.. note:: 上面的例子中，有两个Capabilities，第一个是Channel级别的，是Channel的特性约束，
-          第二个是Orderer的特性约束，是“Orderer”的子项。
-
 When defining the orderer system channel there is no Application section, as those
 capabilities are defined during the creation of an application channel. To define a new
 channel's application capabilities at channel creation time, the application admins should
@@ -172,8 +152,6 @@ model their channel creation transaction after the ``SampleSingleMSPChannelV1_1`
                 - *SampleOrg
             Capabilities:
                 <<: *ApplicationCapabilities
-
-.. note:: 应用级别的特性约束。
 
 Here, the Application section has a new element ``Capabilities`` which references the
 ``ApplicationCapabilities`` section defined at the end of the YAML.

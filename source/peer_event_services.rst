@@ -1,5 +1,5 @@
-Peer channel-based event services (Channel的事件)
-======================================================
+Peer channel-based event services
+=================================
 
 General overview
 ----------------
@@ -18,8 +18,6 @@ receive events are accepted from identities outside of the peer's organization (
 defined by the channel configuration). This also provides greater reliability and a
 way to receive events that may have been missed (whether due to a connectivity issue
 or because the peer is joining a network that has already been running).
-
-.. note:: 事件是Channel级别，监听记录是保存在Channel配置中的。
 
 Available services
 ------------------

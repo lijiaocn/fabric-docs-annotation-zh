@@ -1,55 +1,22 @@
-Welcome to Hyperledger Fabric(中文批注)
-=======================================
+A Blockchain Platform for the Enterprise
+========================================
 
-.. note::
+.. image:: images/hyperledger_fabric_logo_color.png
 
-    这里是HyperLedger Fabric 1.1版本文档的批注版本。
-
-    主要目的是督促自己浏览一下Fabric的文档，防止遗漏重要信息，同时也方便一同学习Fabric的朋友。
-
-    没有翻译成中文，一是因为通篇翻译耗时费力，二是英文原版的表达更精确，还是应当坚持使用英文文档。
-
-    更多关于HyplerLedger的文章：http://www.lijiaocn.com/tags/blockchain.html
-
-    HyperLedger Fabric原始文档：https://hyperledger-fabric.readthedocs.io
-    
-    有批注的页面的标题后面都带有中文，在左侧目录中可以看到。
-
-Hyperledger Fabric is a platform for distributed ledger solutions, underpinned
-by a modular architecture delivering high degrees of confidentiality, resiliency,
-flexibility and scalability.  It is designed to support pluggable implementations
-of different components, and accommodate the complexity and intricacies that exist
-across the economic ecosystem.
-
-.. note:: Fabric是一个“支撑”分布式账本的平台，通过模块化、插件式设计，提供很高的灵活性，
-          能够适应各种复杂情况。Fabric本身不是账本、也不包含“币”，它是一个支撑的平台。
-
-Hyperledger Fabric delivers a uniquely elastic and extensible architecture,
-distinguishing it from alternative blockchain solutions. Planning for the
-future of enterprise blockchain requires building on top of a fully-vetted,
-open source architecture; Hyperledger Fabric is your starting point.
-
-It's recommended for first-time users to begin by going through the
-:doc:`getting_started` section in order to gain familiarity with the Hyperledger Fabric
-components and the basic transaction flow.  Once comfortable, continue
-exploring the library for demos, technical specifications, APIs, etc.
-
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
-
-Before diving in, watch how Hyperledger Fabric is Building a Blockchain for
-Business:
+Enterprise grade permissioned distributed ledger platform that offers
+modularity and versatility for a broad set of industry use cases.
 
 .. raw:: html
 
+   <br/><br/>
    <iframe width="560" height="315" src="https://www.youtube.com/embed/EKa5Gh9whgU" frameborder="0" allowfullscreen></iframe>
    <br/><br/>
 
 .. toctree::
    :maxdepth: 1
-   :caption: Table of Contents
 
+   whatis
+   whatsnew
    getting_started
    key_concepts
    tutorials
@@ -57,12 +24,15 @@ Business:
    command_ref
    architecture
    Fabric-FAQ
-   ordering-service-faq
    CONTRIBUTING
    glossary
    releases
    questions
    status
+
+.. note:: If you have questions not addressed by this documentation, or run into
+          issues with any of the tutorials, please visit the :doc:`questions`
+          page for some tips on where to find additional help.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

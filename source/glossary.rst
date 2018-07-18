@@ -1,32 +1,51 @@
-*Needs Review*
 
-Glossary(术语解释)
+Glossary
 ===========================
 
 Terminology is important, so that all Hyperledger Fabric users and developers
-agree on what we mean by each specific term. What is chaincode, for example.
-The documentation will reference the glossary as needed, but feel free to
-read the entire thing in one sitting if you like; it's pretty enlightening!
-
-.. note::
-
-    这些术语非常重要！！！定义统一了，才能更好的交流。
+agree on what we mean by each specific term. What is a smart contract for
+example. The documentation will reference the glossary as needed, but feel free
+to read the entire thing in one sitting if you like; it's pretty enlightening!
 
 .. _Anchor-Peer:
 
 Anchor Peer
 -----------
 
-A peer node on a channel that all other peers can discover and communicate with.
-Each Member_ on a channel has an anchor peer (or multiple anchor peers to prevent
-single point of failure), allowing for peers belonging to different Members to
-discover all existing peers on a channel.
+Used to initiate gossip communication between peers from different
+organizations. The anchor peer serves as the entry point for another
+organization's peer on the same channel to communicate with each of the peers
+in the anchor peer's organization. Cross-organization gossip is scoped to
+channels. In order for cross-org gossip to work, peers from one organization
+need to know the address of at least one peer from another organization in the
+channel. Each organization added to a channel should identify at least one of
+its peers as an anchor peer (there can be more than one). The anchor peer
+address is stored in the configuration block of the channel.
 
-.. note::
+.. _glossary_ACL:
 
-    每个组织可以设置一个或多个“锚点”Peer。
-    锚点Peer是写入到Channel的配置中的，而每个Peer接入时都会获得Channel配置，
-    因此可以得知其它组织的Peer的地址。
+ACL
+---
+
+An ACL, or Access Control List, associates access to specific peer
+resources (such as system chaincode APIs or event services) to a Policy_
+(which specifies how many and what types of organizations or roles are
+required). The ACL is part of a channel's configuration. It is therefore
+persisted in the channel's configuration blocks, and can be updated using the
+standard configuration update mechanism.
+
+An ACL is formatted as a list of key-value pairs, where the key identifies
+the resource whose access we wish to control, and the value identifies the
+channel policy (group) that is allowed to access it. For example
+``lscc/GetDeploymentSpec: /Channel/Application/Readers``
+defines that the access to the life cycle chaincode ``GetDeploymentSpec`` API
+(the resource) is accessible by identities which satisfy the
+``/Channel/Application/Readers`` policy.
+
+A set of default ACLs is provided in the ``configtx.yaml`` file which is
+used by configtxgen to build channel configurations. The defaults can be set
+in the top level "Application" section of ``configtx.yaml`` or overridden
+on a per profile basis in the "Profiles" section.
 
 .. _Block:
 
@@ -35,10 +54,6 @@ Block
 
 An ordered set of transactions that is cryptographically linked to the
 preceding block(s) on a channel.
-
-.. note::
-
-    多个交易被打包成区块。
 
 .. _Chain:
 
@@ -51,23 +66,12 @@ the block's transactions as valid or invalid based on endorsement policies and
 concurrency violations, and append the block to the hash chain on the peer's
 file system.
 
-.. note::
-
-    区块链，包括所有的交易流水，每个Peer上都有一份。
-    Peer从Orderer那里接收到区块，验证有效后，连接到本地Chain中。
-
 .. _chaincode:
 
 Chaincode
 ---------
 
-Chaincode is software, running on a ledger, to encode assets and the transaction
-instructions (business logic) for modifying the assets.
-
-.. note::
-
-    合约，在Fabric中合约就是一个程序，它以docker容器的形式运行在每个Peer上。
-    可以直接访问Peer上的合约。
+See Smart-Contract_.
 
 .. _Channel:
 
@@ -80,9 +84,6 @@ peers in the channel, and transacting parties must be properly authenticated to
 a channel in order to interact with it.  Channels are defined by a
 Configuration-Block_.
 
-.. note::
-
-    几个成员之间建立的私链。
 
 .. _Commitment:
 
@@ -93,10 +94,6 @@ Each Peer_ on a channel validates ordered blocks of
 transactions and then commits (writes/appends) the blocks to its replica of the
 channel Ledger_. Peers also mark each transaction in each block
 as valid or invalid.
-
-.. note::
-
-    写入账本。
 
 .. _Concurrency-Control-Version-Check:
 
@@ -111,11 +108,6 @@ commitment time, then a Concurrency Control Version Check violation has
 occurred, and the transaction is marked as invalid on the ledger and values
 are not updated in the state database.
 
-.. note::
-
-    Peer在将交易入账时，会检查交易的前提是否改变（数据是否发生变化），如果是,
-    则不入账。
-
 .. _Configuration-Block:
 
 Configuration Block
@@ -127,11 +119,6 @@ channel or overall network (e.g. a member leaving or joining) will result
 in a new configuration block being appended to the appropriate chain. This
 block will contain the contents of the genesis block, plus the delta.
 
-.. note::
-
-    配置块是非常重要的，也就是部署Fabric时使用的创世块。
-    记录了channel、系统chain等信息。
-
 .. Consensus
 
 Consensus
@@ -141,17 +128,24 @@ A broader term overarching the entire transactional flow, which serves to genera
 an agreement on the order and to confirm the correctness of the set of transactions
 constituting a block.
 
+.. Consortium
+
+Consortium
+----------
+
+A consortium is a collection of non-orderer organizations on the blockchain
+network. These are the organizations that form and join channels and that own
+peers. While a blockchain network can have multiple consortia, most blockchain
+networks have a single consortium. At channel creation time, all organizations
+added to the channel must be part of a consortium. However, an organization
+that is not defined in a consortium may be added to an existing channel.
+
 .. _Current-State:
 
 Current State
 -------------
 
-The current state of the ledger represents the latest values for all keys ever
-included in its chain transaction log. Peers commit the latest values to ledger
-current state for each valid transaction included in a processed block. Since
-current state represents all latest key values known to the channel, it is
-sometimes referred to as World State. Chaincode executes transaction proposals
-against current state data.
+See World-State_.
 
 .. _Dynamic-Membership:
 
@@ -162,10 +156,6 @@ Hyperledger Fabric supports the addition/removal of members, peers, and ordering
 nodes, without compromising the operationality of the overall network. Dynamic
 membership is critical when business relationships adjust and entities need to
 be added/removed for various reasons.
-
-.. note::
-
-    Fabric中成员、peer、order node都是可以动态添加的。
 
 .. _Endorsement:
 
@@ -178,10 +168,6 @@ chaincode execution response message, results (read set and write set), and even
 as well as a signature to serve as proof of the peer's chaincode execution.
 Chaincode applications have corresponding endorsement policies, in which the endorsing
 peers are specified.
-
-.. note::
-
-    Peer向client回应的chaincode执行结果。
 
 .. _Endorsement-policy:
 
@@ -198,10 +184,6 @@ misbehavior (deliberate or not) by the endorsing peers. A transaction that is su
 must satisfy the endorsement policy before being marked as valid by committing peers.
 A distinct endorsement policy for install and instantiate transactions is also required.
 
-.. note::
-
-    交易成立需要满足的条件（得到哪些Peer的认同）。
-
 .. _Fabric-ca:
 
 Hyperledger Fabric CA
@@ -217,8 +199,8 @@ certificate (ECert) to each authorized user.
 Genesis Block
 -------------
 
-The configuration block that initializes a blockchain network or channel, and
-also serves as the first block on a chain.
+The configuration block that initializes the ordering service, or serves as the
+first block on a chain.
 
 .. _Gossip-Protocol:
 
@@ -271,31 +253,41 @@ invoke, and an array of arguments.
 Leading Peer
 ------------
 
-Each Member_ can own multiple peers on each channel that
-it subscribes to. One of these peers is serves as the leading peer for the channel,
-in order to communicate with the network ordering service on behalf of the
-member. The ordering service "delivers" blocks to the leading peer(s) on a
-channel, who then distribute them to other peers within the same member cluster.
-
-.. note::
-
-    Orderer只将新的区块，分发给Leading Peer，Leading Peer再分发给其它Peer。
+Each Organization_ can own multiple peers on each channel that
+they subscribe to. One or more of these peers should serve as the leading peer
+for the channel, in order to communicate with the network ordering service on
+behalf of the organization. The ordering service delivers blocks to the
+leading peer(s) on a channel, who then distribute them to other peers within
+the same organization.
 
 .. _Ledger:
 
 Ledger
 ------
+THIS REQUIRES UPDATING
 
-A ledger is a channel's chain and current state data which is maintained by each
-peer on the channel.
+A ledger consists of two distinct, though related, parts -- a "blockchain" and
+the "state database", also known as "world state". Unlike other ledgers,
+blockchains are **immutable** -- that is, once a block has been added to the
+chain, it cannot be changed. In contrast, the "world state" is a database
+containing the current value of the set of key-value pairs that have been added,
+modified or deleted by the set of validated and committed transactions in the
+blockchain.
+
+It's helpful to think of there being one **logical** ledger for each channel in
+the network. In reality, each peer in a channel maintains its own copy of the
+ledger -- which is kept consistent with every other peer's copy through a
+process called **consensus**. The term **Distributed Ledger Technology**
+(**DLT**) is often associated with this kind of ledger -- one that is logically
+singular, but has many identical copies distributed across a set of network
+nodes (peers and the ordering service).
 
 .. _Member:
 
 Member
 ------
 
-A legally separate entity that owns a unique root certificate for the network.
-Network components such as peer nodes and application clients will be linked to a member.
+See Organization_.
 
 .. _MSP:
 
@@ -334,6 +326,21 @@ designed to support pluggable implementations beyond the out-of-the-box SOLO and
 The ordering service is a common binding for the overall network; it contains the cryptographic
 identity material tied to each Member_.
 
+.. _Organization:
+
+Organization
+-----------------
+Also known as "members", organizations are invited to join the blockchain network
+by a blockchain service provider. An organization is joined to a network by adding its
+Membership Service Provider (MSP_) to the network. The MSP defines how other members of the
+network may verify that signatures (such as those over transactions) were generated by a valid
+identity, issued by that organization. The particular access rights of identities within an MSP
+are governed by policies which are are also agreed upon when the organization is joined to the
+network. An organization can be as large as a multi-national corporation or as small as an
+individual. The transaction endpoint of an organization is a Peer_. A collection of organizations
+form a Consortium_. While all of the organizations on a network are members, not every organization
+will be part of a consortium.
+
 .. _Peer:
 
 Peer
@@ -347,8 +354,39 @@ read/write operations to the ledger.  Peers are owned and maintained by members.
 Policy
 ------
 
-There are policies for endorsement, validation, chaincode
-management and network/channel management.
+Policies are expressions composed of properties of digital identities, for
+example: ``Org1.Peer OR Org2.Peer``. They are used to restrict access to
+resources on a blockchain network. For instance, they dictate who can read from
+or write to a channel, or who can use a specific chaincode API via an ACL_.
+Policies may be defined in ``configtx.yaml`` prior to bootstrapping an ordering
+service or creating a channel, or they can be specified when instantiating
+chaincode on a channel. A default set of policies ship in the sample
+``configtx.yaml`` which will be appropriate for most networks.
+
+.. _glossary-Private-Data:
+
+Private Data
+------------
+
+Confidential data that is stored in a private database on each authorized peer,
+logically separate from the channel ledger data. Access to this data is
+restricted to one or more organizations on a channel via a private data
+collection definition. Unauthorized organizations will have a hash of the
+private data on the channel ledger as evidence of the transaction data. Also,
+for further privacy, hashes of the private data go through the
+Ordering-Service_, not the private data itself, so this keeps private data
+confidential from Orderer.
+
+.. _glossary-Private-Data-Collection:
+
+Private Data Collection (Collection)
+------------------------------------
+
+Used to manage confidential data that two or more organizations on a channel
+want to keep private from other organizations on that channel. The collection
+definition describes a subset of organizations on a channel entitled to store
+a set of private data, which by extension implies that only these organizations
+can transact with the private data.
 
 .. _Proposal:
 
@@ -382,8 +420,22 @@ for developers to write and test chaincode applications. The SDK is fully
 configurable and extensible through a standard interface. Components, including
 cryptographic algorithms for signatures, logging frameworks and state stores,
 are easily swapped in and out of the SDK. The SDK provides APIs for transaction
-processing, membership services, node traversal and event handling. The SDK
-comes in multiple flavors: Node.js, Java. and Python.
+processing, membership services, node traversal and event handling.
+
+Currently, the two officially supported SDKs are for Node.js and Java, while three
+more -- Python, Go and REST -- are not yet official but can still be downloaded
+and tested.
+
+.. _Smart-Contract:
+
+Smart Contract
+--------------
+
+A smart contract is code -- invoked by a client application external to the
+blockchain network -- that manages access and modifications to a set of
+key-value pairs in the :ref:`World-State`. In Hyperledger Fabric, smart
+contracts are referred to as chaincode. Smart contract chaincode is installed
+onto peer nodes and instantiated to one or more channels.
 
 .. _State-DB:
 
@@ -410,11 +462,6 @@ of channels.  For instance, a collection of financial institutions may form a
 consortium (represented through the system chain), and then proceed to create
 channels relative to their aligned and varying business agendas.
 
-.. note::
-
-    系统链，配置区块形成的链，全局信息
-    暂时没弄清楚这条链是怎么回事，在Orderer的data目录中只看到有以channel名命名的子目录
-
 .. _Transaction:
 
 Transaction
@@ -425,6 +472,25 @@ Invokes are requests to read/write data from the ledger. Instantiate is a reques
 start and initialize a chaincode on a channel. Application clients gather invoke or
 instantiate responses from endorsing peers and package the results and endorsements
 into a transaction that is submitted for ordering, validation, and commit.
+
+.. _World-State:
+
+World State
+-----------
+
+Also known as the “current state”, the world state is a component of the
+HyperLedger Fabric :ref:`Ledger`. The world state represents the latest values
+for all keys included in the chain transaction log. Chaincode executes
+transaction proposals against world state data because the world state provides
+direct access to the latest value of these keys rather than having to calculate
+them by traversing the entire transaction log. The world state will change
+every time the value of a key changes (for example, when the ownership of a
+car -- the "key" -- is transferred from one owner to another -- the
+"value") or when a new key is added (a car is created). As a result, the world
+state is critical to a transaction flow, since the current state of a key-value
+pair must be known before it can be changed. Peers commit the latest values to
+the ledger world state for each valid transaction included in a processed block.
+
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

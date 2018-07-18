@@ -1,4 +1,4 @@
-Key Concepts(主要概念)
+Key Concepts
 ============
 
 .. toctree::
@@ -7,8 +7,10 @@ Key Concepts(主要概念)
    blockchain
    functionalities
    fabric_model
+   network/network.md
    identity/identity.md
    membership/membership.md
    peers/peers.md
-   ledger
+   private-data/private-data.md
+   ledger/ledger.md
    usecases
